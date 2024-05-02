@@ -1,3 +1,10 @@
+/**
+ * @file mazegen.c
+ * @author T Sreeja Chowdary
+ * @brief Additional Challenge Task – Maze Generator​
+ * 
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -24,7 +31,6 @@ Maze generate_maze(int width, int height);
 void save_maze_to_file(Maze maze, char *filename);
 bool is_valid_location(Maze maze, Coord location);
 void dfs_generate_maze(Maze *maze, Coord location);
-void shuffle_directions(int directions[][2]);
 
 int main(int argc, char *argv[]) {
     // Check command-line arguments
@@ -55,6 +61,7 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
+// Generating maze with the input height and width.
 Maze generate_maze(int width, int height) {
     Maze maze;
     maze.width = width;
@@ -88,26 +95,7 @@ Maze generate_maze(int width, int height) {
     } while (maze.end.x == maze.start.x && maze.end.y == maze.start.y);
     maze.map[maze.end.y][maze.end.x] = 'E';
 
-    // Generate maze using modified DFS algorithm
-    dfs_generate_maze(&maze, maze.start);
-
     return maze;
-}
-
-void dfs_generate_maze(Maze *maze, Coord location) {
-    int directions[4][2] = {{0, -2}, {0, 2}, {-2, 0}, {2, 0}}; // Up, down, left, right
-    shuffle_directions(directions); // Shuffle directions randomly
-
-    // Try each direction
-    for (int i = 0; i < 4; i++) {
-        Coord next = {location.x + directions[i][0], location.y + directions[i][1]};
-        Coord wall = {location.x + directions[i][0] / 2, location.y + directions[i][1] / 2};
-        if (is_valid_location(*maze, next)) {
-            maze->map[next.y][next.x] = ' ';
-            maze->map[wall.y][wall.x] = ' '; // Modify to create passage instead of leaving a wall
-            dfs_generate_maze(maze, next);
-        }
-    }
 }
 
 bool is_valid_location(Maze maze, Coord location) {
@@ -115,7 +103,17 @@ bool is_valid_location(Maze maze, Coord location) {
            maze.map[location.y][location.x] == '#';
 }
 
+//Maze generating algorithm used is dfs recursive implementation.
+void dfs_generate_maze(Maze *maze, Coord location) {
+    // to be implemented in later iterations.
+}
+
+/*
+ *https://chat.openai.com/share/1d04501d-8adc-4b09-aaa9-370bad7a55c5
+ * lines 125-13 adapted from the code chatgpt has given.
+*/
 void save_maze_to_file(Maze maze, char *filename) {
+    // Opening a new text file.
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
         printf("Error opening file.\n");
@@ -130,19 +128,9 @@ void save_maze_to_file(Maze maze, char *filename) {
         fprintf(file, "\n");
     }
 
+    // closing the file. 
     fclose(file);
 }
 
-void shuffle_directions(int directions[][2]) {
-    // Shuffle directions randomly
-    for (int i = 0; i < 4; i++) {
-        int j = rand() % (i + 1);
-        int temp[2];
-        temp[0] = directions[i][0];
-        temp[1] = directions[i][1];
-        directions[i][0] = directions[j][0];
-        directions[i][1] = directions[j][1];
-        directions[j][0] = temp[0];
-        directions[j][1] = temp[1];
-    }
-}
+
+
